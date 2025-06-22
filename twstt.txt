@@ -1,0 +1,590 @@
+-- Old Server Finder - Premium Loading Screen v2.0
+-- Enhanced with realistic background designs and extended loading
+-- Designed for KRNL execution
+
+local Players = game:GetService("Players")
+local TweenService = game:GetService("TweenService")
+local RunService = game:GetService("RunService")
+local UserInputService = game:GetService("UserInputService")
+local TextService = game:GetService("TextService")
+
+local player = Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
+
+-- Create main ScreenGui
+local loadingGui = Instance.new("ScreenGui")
+loadingGui.Name = "OldServerFinderLoading"
+loadingGui.ResetOnSpawn = false
+loadingGui.IgnoreGuiInset = true
+loadingGui.DisplayOrder = 999999
+loadingGui.Parent = playerGui
+
+-- Main background frame
+local mainFrame = Instance.new("Frame")
+mainFrame.Name = "MainFrame"
+mainFrame.Size = UDim2.new(1, 0, 1, 0)
+mainFrame.Position = UDim2.new(0, 0, 0, 0)
+mainFrame.BackgroundColor3 = Color3.fromRGB(5, 8, 15)
+mainFrame.BorderSizePixel = 0
+mainFrame.Parent = loadingGui
+
+-- Animated background pattern
+local backgroundPattern = Instance.new("Frame")
+backgroundPattern.Name = "BackgroundPattern"
+backgroundPattern.Size = UDim2.new(2, 0, 2, 0)
+backgroundPattern.Position = UDim2.new(-0.5, 0, -0.5, 0)
+backgroundPattern.BackgroundTransparency = 1
+backgroundPattern.Parent = mainFrame
+
+-- Create multiple animated background elements
+for i = 1, 15 do
+    local bgElement = Instance.new("Frame")
+    bgElement.Name = "BgElement" .. i
+    bgElement.Size = UDim2.new(0, math.random(100, 300), 0, math.random(100, 300))
+    bgElement.Position = UDim2.new(math.random(), 0, math.random(), 0)
+    bgElement.BackgroundColor3 = Color3.fromRGB(
+        math.random(20, 80),
+        math.random(40, 120), 
+        math.random(80, 255)
+    )
+    bgElement.BackgroundTransparency = math.random(85, 95) / 100
+    bgElement.BorderSizePixel = 0
+    bgElement.Parent = backgroundPattern
+    
+    local bgCorner = Instance.new("UICorner")
+    bgCorner.CornerRadius = UDim.new(0, math.random(10, 50))
+    bgCorner.Parent = bgElement
+    
+    -- Animate background elements
+    local moveTween = TweenService:Create(
+        bgElement,
+        TweenInfo.new(math.random(8, 15), Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true),
+        {
+            Position = UDim2.new(
+                math.random() * 0.8 + 0.1, 0,
+                math.random() * 0.8 + 0.1, 0
+            ),
+            Rotation = math.random(-180, 180)
+        }
+    )
+    moveTween:Play()
+end
+
+-- Animated background gradient
+local backgroundGradient = Instance.new("UIGradient")
+backgroundGradient.Color = ColorSequence.new{
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(8, 12, 25)),
+    ColorSequenceKeypoint.new(0.2, Color3.fromRGB(15, 20, 35)),
+    ColorSequenceKeypoint.new(0.4, Color3.fromRGB(5, 8, 15)),
+    ColorSequenceKeypoint.new(0.6, Color3.fromRGB(20, 15, 40)),
+    ColorSequenceKeypoint.new(0.8, Color3.fromRGB(8, 25, 45)),
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(5, 8, 15))
+}
+backgroundGradient.Rotation = 45
+backgroundGradient.Parent = mainFrame
+
+-- Digital grid overlay
+local gridFrame = Instance.new("Frame")
+gridFrame.Name = "GridFrame"
+gridFrame.Size = UDim2.new(1, 0, 1, 0)
+gridFrame.Position = UDim2.new(0, 0, 0, 0)
+gridFrame.BackgroundTransparency = 1
+gridFrame.Parent = mainFrame
+
+-- Create grid pattern
+for x = 0, 20 do
+    for y = 0, 15 do
+        local gridDot = Instance.new("Frame")
+        gridDot.Size = UDim2.new(0, 2, 0, 2)
+        gridDot.Position = UDim2.new(x/20, 0, y/15, 0)
+        gridDot.BackgroundColor3 = Color3.fromRGB(0, 150, 255)
+        gridDot.BackgroundTransparency = 0.8
+        gridDot.BorderSizePixel = 0
+        gridDot.Parent = gridFrame
+        
+        local gridCorner = Instance.new("UICorner")
+        gridCorner.CornerRadius = UDim.new(1, 0)
+        gridCorner.Parent = gridDot
+        
+        -- Animate grid dots
+        spawn(function()
+            while gridFrame.Parent do
+                local glowTween = TweenService:Create(
+                    gridDot,
+                    TweenInfo.new(math.random(2, 5), Enum.EasingStyle.Sine, Enum.EasingDirection.InOut),
+                    {BackgroundTransparency = math.random(60, 95) / 100}
+                )
+                glowTween:Play()
+                wait(math.random(1, 3))
+            end
+        end)
+    end
+end
+
+-- Glassmorphism container
+local glassContainer = Instance.new("Frame")
+glassContainer.Name = "GlassContainer"
+glassContainer.Size = UDim2.new(0, 580, 0, 420)
+glassContainer.Position = UDim2.new(0.5, -290, 0.5, -210)
+glassContainer.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+glassContainer.BackgroundTransparency = 0.88
+glassContainer.BorderSizePixel = 0
+glassContainer.Parent = mainFrame
+
+-- Glass container gradient
+local glassGradient = Instance.new("UIGradient")
+glassGradient.Color = ColorSequence.new{
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(80, 120, 255)),
+    ColorSequenceKeypoint.new(0.3, Color3.fromRGB(120, 80, 255)),
+    ColorSequenceKeypoint.new(0.7, Color3.fromRGB(255, 80, 180)),
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(80, 255, 120))
+}
+glassGradient.Transparency = NumberSequence.new{
+    NumberSequenceKeypoint.new(0, 0.85),
+    NumberSequenceKeypoint.new(0.5, 0.95),
+    NumberSequenceKeypoint.new(1, 0.85)
+}
+glassGradient.Parent = glassContainer
+
+-- Glass container corner and effects
+local glassCorner = Instance.new("UICorner")
+glassCorner.CornerRadius = UDim.new(0, 28)
+glassCorner.Parent = glassContainer
+
+local glassStroke = Instance.new("UIStroke")
+glassStroke.Color = Color3.fromRGB(255, 255, 255)
+glassStroke.Transparency = 0.6
+glassStroke.Thickness = 1.5
+glassStroke.Parent = glassContainer
+
+-- Add blur effect simulation
+local blurFrame = Instance.new("Frame")
+blurFrame.Size = UDim2.new(1, 4, 1, 4)
+blurFrame.Position = UDim2.new(0, -2, 0, -2)
+blurFrame.BackgroundColor3 = Color3.fromRGB(50, 100, 200)
+blurFrame.BackgroundTransparency = 0.95
+blurFrame.BorderSizePixel = 0
+blurFrame.ZIndex = glassContainer.ZIndex - 1
+blurFrame.Parent = glassContainer
+
+local blurCorner = Instance.new("UICorner")
+blurCorner.CornerRadius = UDim.new(0, 30)
+blurCorner.Parent = blurFrame
+
+-- Title with enhanced styling
+local titleLabel = Instance.new("TextLabel")
+titleLabel.Name = "TitleLabel"
+titleLabel.Size = UDim2.new(1, -40, 0, 60)
+titleLabel.Position = UDim2.new(0, 20, 0, 25)
+titleLabel.BackgroundTransparency = 1
+titleLabel.Text = "OLD SERVER FINDER"
+titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+titleLabel.TextScaled = true
+titleLabel.Font = Enum.Font.GothamBold
+titleLabel.Parent = glassContainer
+
+-- Enhanced title glow
+local titleGlow = titleLabel:Clone()
+titleGlow.Name = "TitleGlow"
+titleGlow.Position = UDim2.new(0, 22, 0, 27)
+titleGlow.TextColor3 = Color3.fromRGB(120, 180, 255)
+titleGlow.TextTransparency = 0.3
+titleGlow.ZIndex = titleLabel.ZIndex - 1
+titleGlow.Parent = glassContainer
+
+-- Version label
+local versionLabel = Instance.new("TextLabel")
+versionLabel.Name = "VersionLabel"
+versionLabel.Size = UDim2.new(0, 100, 0, 20)
+versionLabel.Position = UDim2.new(1, -120, 0, 30)
+versionLabel.BackgroundTransparency = 1
+versionLabel.Text = "v2.1.5"
+versionLabel.TextColor3 = Color3.fromRGB(120, 120, 120)
+versionLabel.TextScaled = true
+versionLabel.Font = Enum.Font.Gotham
+versionLabel.Parent = glassContainer
+
+-- Subtitle with status
+local subtitleLabel = Instance.new("TextLabel")
+subtitleLabel.Name = "SubtitleLabel"
+subtitleLabel.Size = UDim2.new(1, -40, 0, 25)
+subtitleLabel.Position = UDim2.new(0, 20, 0, 95)
+subtitleLabel.BackgroundTransparency = 1
+subtitleLabel.Text = "Initializing quantum server detection protocols..."
+subtitleLabel.TextColor3 = Color3.fromRGB(200, 200, 200)
+subtitleLabel.TextScaled = true
+subtitleLabel.Font = Enum.Font.Gotham
+subtitleLabel.Parent = glassContainer
+
+-- Time remaining label
+local timeLabel = Instance.new("TextLabel")
+timeLabel.Name = "TimeLabel"
+timeLabel.Size = UDim2.new(1, -40, 0, 18)
+timeLabel.Position = UDim2.new(0, 20, 0, 125)
+timeLabel.BackgroundTransparency = 1
+timeLabel.Text = "Estimated time: 20:00"
+timeLabel.TextColor3 = Color3.fromRGB(150, 150, 150)
+timeLabel.TextScaled = true
+timeLabel.Font = Enum.Font.Gotham
+timeLabel.Parent = glassContainer
+
+-- Progress container with enhanced styling
+local progressContainer = Instance.new("Frame")
+progressContainer.Name = "ProgressContainer"
+progressContainer.Size = UDim2.new(1, -40, 0, 24)
+progressContainer.Position = UDim2.new(0, 20, 0, 155)
+progressContainer.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+progressContainer.BackgroundTransparency = 0.4
+progressContainer.BorderSizePixel = 0
+progressContainer.Parent = glassContainer
+
+local progressCorner = Instance.new("UICorner")
+progressCorner.CornerRadius = UDim.new(0, 12)
+progressCorner.Parent = progressContainer
+
+local progressStroke = Instance.new("UIStroke")
+progressStroke.Color = Color3.fromRGB(100, 100, 100)
+progressStroke.Transparency = 0.7
+progressStroke.Thickness = 1
+progressStroke.Parent = progressContainer
+
+-- Progress bar with enhanced effects
+local progressBar = Instance.new("Frame")
+progressBar.Name = "ProgressBar"
+progressBar.Size = UDim2.new(0, 0, 1, 0)
+progressBar.Position = UDim2.new(0, 0, 0, 0)
+progressBar.BackgroundColor3 = Color3.fromRGB(120, 180, 255)
+progressBar.BorderSizePixel = 0
+progressBar.Parent = progressContainer
+
+-- Progress bar gradient
+local progressGradient = Instance.new("UIGradient")
+progressGradient.Color = ColorSequence.new{
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(0, 200, 255)),
+    ColorSequenceKeypoint.new(0.3, Color3.fromRGB(80, 120, 255)),
+    ColorSequenceKeypoint.new(0.7, Color3.fromRGB(120, 80, 255)),
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 120, 180))
+}
+progressGradient.Parent = progressBar
+
+local progressBarCorner = Instance.new("UICorner")
+progressBarCorner.CornerRadius = UDim.new(0, 12)
+progressBarCorner.Parent = progressBar
+
+-- Progress percentage
+local progressPercent = Instance.new("TextLabel")
+progressPercent.Name = "ProgressPercent"
+progressPercent.Size = UDim2.new(1, -40, 0, 22)
+progressPercent.Position = UDim2.new(0, 20, 0, 190)
+progressPercent.BackgroundTransparency = 1
+progressPercent.Text = "0%"
+progressPercent.TextColor3 = Color3.fromRGB(255, 255, 255)
+progressPercent.TextScaled = true
+progressPercent.Font = Enum.Font.GothamBold
+progressPercent.Parent = glassContainer
+
+-- Server types container
+local serverContainer = Instance.new("Frame")
+serverContainer.Name = "ServerContainer"
+serverContainer.Size = UDim2.new(1, -40, 0, 140)
+serverContainer.Position = UDim2.new(0, 20, 0, 220)
+serverContainer.BackgroundTransparency = 1
+serverContainer.Parent = glassContainer
+
+local serverLayout = Instance.new("UIListLayout")
+serverLayout.SortOrder = Enum.SortOrder.LayoutOrder
+serverLayout.Padding = UDim.new(0, 6)
+serverLayout.Parent = serverContainer
+
+-- Enhanced server types with more details
+local serverTypes = {
+    {name = "🌸 Candy Blossom Server", status = "Scanning premium instances..."},
+    {name = "🐾 Pet Spawner Server", status = "Analyzing spawn rates..."}, 
+    {name = "🌱 Seed Spawner Server", status = "Checking inventory limits..."},
+    {name = "👁️ Egg ESP Server", status = "Validating ESP modules..."},
+    {name = "🦝 Raccoon Dupe Server", status = "Testing duplication methods..."},
+    {name = "🦋 Dragonfly Dupe Server", status = "Verifying exploit compatibility..."}
+}
+
+local serverLabels = {}
+local serverStatusLabels = {}
+for i, serverData in ipairs(serverTypes) do
+    -- Main server label
+    local serverLabel = Instance.new("TextLabel")
+    serverLabel.Name = "ServerLabel" .. i
+    serverLabel.Size = UDim2.new(1, 0, 0, 20)
+    serverLabel.BackgroundTransparency = 1
+    serverLabel.Text = "⏳ " .. serverData.name
+    serverLabel.TextColor3 = Color3.fromRGB(160, 160, 160)
+    serverLabel.TextScaled = true
+    serverLabel.Font = Enum.Font.GothamBold
+    serverLabel.TextXAlignment = Enum.TextXAlignment.Left
+    serverLabel.LayoutOrder = i * 2 - 1
+    serverLabel.Parent = serverContainer
+    
+    -- Status label
+    local statusLabel = Instance.new("TextLabel")
+    statusLabel.Name = "StatusLabel" .. i
+    statusLabel.Size = UDim2.new(1, -20, 0, 16)
+    statusLabel.Position = UDim2.new(0, 20, 0, 0)
+    statusLabel.BackgroundTransparency = 1
+    statusLabel.Text = serverData.status
+    statusLabel.TextColor3 = Color3.fromRGB(120, 120, 120)
+    statusLabel.TextScaled = true
+    statusLabel.Font = Enum.Font.Gotham
+    statusLabel.TextXAlignment = Enum.TextXAlignment.Left
+    statusLabel.LayoutOrder = i * 2
+    statusLabel.Parent = serverContainer
+    
+    table.insert(serverLabels, serverLabel)
+    table.insert(serverStatusLabels, statusLabel)
+end
+
+-- Discord button in lower left corner
+local discordButton = Instance.new("TextButton")
+discordButton.Name = "DiscordButton"
+discordButton.Size = UDim2.new(0, 150, 0, 40)
+discordButton.Position = UDim2.new(0, 20, 1, -50)
+discordButton.AnchorPoint = Vector2.new(0, 1)
+discordButton.BackgroundColor3 = Color3.fromRGB(88, 101, 242)
+discordButton.BackgroundTransparency = 0.2
+discordButton.Text = "Join Discord"
+discordButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+discordButton.TextSize = 16
+discordButton.Font = Enum.Font.GothamBold
+discordButton.Parent = mainFrame
+
+-- Discord button styling
+local discordCorner = Instance.new("UICorner")
+discordCorner.CornerRadius = UDim.new(0, 8)
+discordCorner.Parent = discordButton
+
+local discordStroke = Instance.new("UIStroke")
+discordStroke.Color = Color3.fromRGB(255, 255, 255)
+discordStroke.Transparency = 0.7
+discordStroke.Thickness = 1
+discordStroke.Parent = discordButton
+
+-- Discord button hover effects
+discordButton.MouseEnter:Connect(function()
+    local hoverTween = TweenService:Create(
+        discordButton,
+        TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+        {
+            BackgroundTransparency = 0,
+            Size = UDim2.new(0, 160, 0, 42)
+        }
+    )
+    hoverTween:Play()
+end)
+
+discordButton.MouseLeave:Connect(function()
+    local leaveTween = TweenService:Create(
+        discordButton,
+        TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+        {
+            BackgroundTransparency = 0.2,
+            Size = UDim2.new(0, 150, 0, 40)
+        }
+    )
+    leaveTween:Play()
+end)
+
+-- Discord button click function
+discordButton.MouseButton1Click:Connect(function()
+    setclipboard("https://discord.gg/HZhd2uvZzc")
+    
+    local originalText = discordButton.Text
+    discordButton.Text = "Copied to clipboard!"
+    
+    wait(2)
+    discordButton.Text = originalText
+end)
+
+-- Loading variables
+local startTime = tick()
+local totalDuration = 1200 -- 20 minutes in seconds
+local currentProgress = 0
+local isComplete = false
+local stuckProgress = nil
+local stuckTime = nil
+
+-- Realistic loading phases (20 minutes total)
+local loadingPhases = {
+    {duration = 60, text = "Connecting to proxy network...", maxProgress = 5},
+    {duration = 120, text = "Scanning for premium servers...", maxProgress = 15},
+    {duration = 180, text = "Analyzing server configurations...", maxProgress = 30},
+    {duration = 240, text = "Filtering high-value targets...", maxProgress = 50},
+    {duration = 180, text = "Establishing secure connections...", maxProgress = 70},
+    {duration = 200, text = "Validating server authenticity...", maxProgress = 85},
+    {duration = 150, text = "Finalizing server list...", maxProgress = 95},
+    {duration = 67, text = "Launch ready! Press ENTER to continue...", maxProgress = 100}
+}
+
+-- Stuck loading simulation (random chance)
+local stuckChance = math.random(1, 10)
+local willGetStuck = stuckChance <= 3 -- 30% chance to get stuck
+
+-- 3D animations
+local rotationTween = TweenService:Create(
+    glassContainer,
+    TweenInfo.new(12, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true),
+    {Rotation = 1.5}
+)
+rotationTween:Play()
+
+local gradientTween = TweenService:Create(
+    backgroundGradient,
+    TweenInfo.new(8, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true),
+    {Rotation = 180}
+)
+gradientTween:Play()
+
+local glassGradientTween = TweenService:Create(
+    glassGradient,
+    TweenInfo.new(6, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true),
+    {Rotation = 90}
+)
+glassGradientTween:Play()
+
+-- Progress animation function
+local function updateProgress()
+    local elapsedTime = tick() - startTime
+    local remainingTime = math.max(0, totalDuration - elapsedTime)
+    
+    -- Update time display
+    local minutes = math.floor(remainingTime / 60)
+    local seconds = math.floor(remainingTime % 60)
+    timeLabel.Text = string.format("Estimated time: %02d:%02d", minutes, seconds)
+    
+    -- Handle stuck loading
+    if willGetStuck and not stuckProgress and elapsedTime > 300 and elapsedTime < 600 then -- Get stuck between 5-10 minutes
+        stuckProgress = currentProgress
+        stuckTime = elapsedTime
+        subtitleLabel.Text = "Connection timeout... Retrying..."
+        subtitleLabel.TextColor3 = Color3.fromRGB(255, 200, 100)
+        
+        -- Add loading dots animation
+        spawn(function()
+            local dots = ""
+            while stuckProgress and (tick() - startTime - stuckTime) < 60 do
+                dots = dots .. "."
+                if #dots > 3 then dots = "" end
+                subtitleLabel.Text = "Connection timeout... Retrying" .. dots
+                wait(0.5)
+            end
+        end)
+        
+        -- Resume after 1 minute
+        spawn(function()
+            wait(60)
+            if stuckProgress then
+                stuckProgress = nil
+                subtitleLabel.TextColor3 = Color3.fromRGB(200, 200, 200)
+                subtitleLabel.Text = "Connection restored! Resuming scan..."
+            end
+        end)
+    end
+    
+    -- Calculate progress based on phases
+    if not stuckProgress then
+        local phaseTime = 0
+        for i, phase in ipairs(loadingPhases) do
+            if elapsedTime <= phaseTime + phase.duration then
+                local phaseProgress = (elapsedTime - phaseTime) / phase.duration
+                local prevMax = i > 1 and loadingPhases[i-1].maxProgress or 0
+                currentProgress = prevMax + (phase.maxProgress - prevMax) * phaseProgress
+                
+                if subtitleLabel.Text ~= phase.text and not string.find(subtitleLabel.Text, "timeout") then
+                    subtitleLabel.Text = phase.text
+                end
+                break
+            end
+            phaseTime = phaseTime + phase.duration
+        end
+    end
+    
+    -- Update progress display
+    progressPercent.Text = math.floor(currentProgress) .. "%"
+    
+    -- Animate progress bar
+    local targetSize = UDim2.new(currentProgress / 100, 0, 1, 0)
+    if progressBar.Size.X.Scale < targetSize.X.Scale then
+        progressBar.Size = targetSize
+    end
+    
+    -- Update server statuses based on progress
+    local serverIndex = math.floor(currentProgress / 16) + 1
+    if serverIndex <= #serverLabels and currentProgress >= (serverIndex - 1) * 16 then
+        if not string.find(serverLabels[serverIndex].Text, "✅") then
+            serverLabels[serverIndex].Text = "✅ " .. serverTypes[serverIndex].name
+            serverLabels[serverIndex].TextColor3 = Color3.fromRGB(100, 255, 100)
+            serverStatusLabels[serverIndex].Text = "Connected successfully!"
+            serverStatusLabels[serverIndex].TextColor3 = Color3.fromRGB(100, 255, 100)
+        end
+    end
+    
+    -- Check completion
+    if currentProgress >= 100 and not isComplete then
+        isComplete = true
+        local pulseTween = TweenService:Create(
+            subtitleLabel,
+            TweenInfo.new(1, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true),
+            {TextColor3 = Color3.fromRGB(120, 255, 120)}
+        )
+        pulseTween:Play()
+    end
+end
+
+-- Main update loop
+spawn(function()
+    while loadingGui.Parent and not isComplete do
+        updateProgress()
+        wait(0.1)
+    end
+end)
+
+-- Handle completion
+UserInputService.InputBegan:Connect(function(input, processed)
+    if processed then return end
+    
+    if isComplete and input.KeyCode == Enum.KeyCode.Return then
+        -- Enhanced fade out animation
+        local fadeOutTween = TweenService:Create(
+            mainFrame,
+            TweenInfo.new(1.5, Enum.EasingStyle.Quart, Enum.EasingDirection.Out),
+            {BackgroundTransparency = 1}
+        )
+        
+        local containerFadeOut = TweenService:Create(
+            glassContainer,
+            TweenInfo.new(1.5, Enum.EasingStyle.Back, Enum.EasingDirection.In),
+            {
+                BackgroundTransparency = 1, 
+                Size = UDim2.new(0, 0, 0, 0),
+                Position = UDim2.new(0.5, 0, 0.5, 0)
+            }
+        )
+        
+        fadeOutTween:Play()
+        containerFadeOut:Play()
+        
+        fadeOutTween.Completed:Connect(function()
+            loadingGui:Destroy()
+            print("Old Server Finder loaded successfully!")
+        end)
+    end
+end)
+
+-- Auto-destroy after 25 minutes (safety measure)
+spawn(function()
+    wait(1500)
+    if loadingGui.Parent then
+        loadingGui:Destroy()
+        print("Loading screen auto-destroyed after timeout")
+    end
+end)
+
+print("Old Server Finder v2.0 Loading Screen initialized!")
+print("Enhanced with realistic 20-minute loading progression")
+print("Features: Stuck loading simulation, animated backgrounds, Discord integration")
