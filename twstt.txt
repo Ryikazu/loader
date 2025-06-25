@@ -390,12 +390,100 @@ discordButton.MouseLeave:Connect(function()
     leaveTween:Play()
 end)
 
--- Discord button click function
+-- Discord button click function with popup notification
 discordButton.MouseButton1Click:Connect(function()
-    setclipboard("https://discord.gg/HZhd2uvZzc")
+    setclipboard("https://discord.gg/sMqvVSK3fD")
     
     local originalText = discordButton.Text
     discordButton.Text = "Copied to clipboard!"
+    
+    -- Create advertisement popup with improved text visibility
+    local adPopup = Instance.new("Frame")
+    adPopup.Name = "AdPopup"
+    adPopup.Size = UDim2.new(0, 400, 0, 220)
+    adPopup.Position = UDim2.new(0.5, -200, 0.5, -110)
+    adPopup.BackgroundColor3 = Color3.fromRGB(15, 20, 35)
+    adPopup.BackgroundTransparency = 0.05  -- Less transparent for better readability
+    adPopup.BorderSizePixel = 0
+    adPopup.ZIndex = 1000000
+    adPopup.Parent = loadingGui
+    
+    local popupCorner = Instance.new("UICorner")
+    popupCorner.CornerRadius = UDim.new(0, 12)
+    popupCorner.Parent = adPopup
+    
+    local popupStroke = Instance.new("UIStroke")
+    popupStroke.Color = Color3.fromRGB(100, 150, 255)
+    popupStroke.Thickness = 2
+    popupStroke.Parent = adPopup
+    
+    -- Title label with improved visibility
+    local titleLabel = Instance.new("TextLabel")
+    titleLabel.Name = "TitleLabel"
+    titleLabel.Size = UDim2.new(1, -40, 0, 40)
+    titleLabel.Position = UDim2.new(0, 20, 0, 10)
+    titleLabel.BackgroundTransparency = 1
+    titleLabel.Text = "Grow a Garden Market"
+    titleLabel.TextColor3 = Color3.fromRGB(100, 200, 255)  -- Brighter color
+    titleLabel.TextSize = 24
+    titleLabel.Font = Enum.Font.GothamBold
+    titleLabel.TextXAlignment = Enum.TextXAlignment.Left
+    titleLabel.ZIndex = adPopup.ZIndex + 1
+    titleLabel.Parent = adPopup
+    
+    local divider = Instance.new("Frame")
+    divider.Name = "Divider"
+    divider.Size = UDim2.new(1, -40, 0, 1)
+    divider.Position = UDim2.new(0, 20, 0, 55)
+    divider.BackgroundColor3 = Color3.fromRGB(100, 150, 255)
+    divider.BorderSizePixel = 0
+    divider.ZIndex = adPopup.ZIndex + 1
+    divider.Parent = adPopup
+    
+    -- Info label with improved visibility
+    local infoLabel = Instance.new("TextLabel")
+    infoLabel.Name = "InfoLabel"
+    infoLabel.Size = UDim2.new(1, -40, 0, 100)
+    infoLabel.Position = UDim2.new(0, 20, 0, 60)
+    infoLabel.BackgroundTransparency = 1
+    infoLabel.Text = "This is a marketplace and middleman service for Grow a Garden where you can trade and sell your items.\n\nNote: This Discord is not affiliated with this script - it's a paid advertisement."
+    infoLabel.TextColor3 = Color3.fromRGB(220, 220, 220)  -- Brighter text
+    infoLabel.TextSize = 16
+    infoLabel.TextWrapped = true
+    infoLabel.Font = Enum.Font.Gotham
+    infoLabel.TextXAlignment = Enum.TextXAlignment.Left
+    infoLabel.ZIndex = adPopup.ZIndex + 1
+    infoLabel.Parent = adPopup
+    
+    local closeButton = Instance.new("TextButton")
+    closeButton.Name = "CloseButton"
+    closeButton.Size = UDim2.new(0, 120, 0, 35)
+    closeButton.Position = UDim2.new(0.5, -60, 1, -45)
+    closeButton.AnchorPoint = Vector2.new(0.5, 1)
+    closeButton.BackgroundColor3 = Color3.fromRGB(100, 150, 255)
+    closeButton.BackgroundTransparency = 0.2
+    closeButton.Text = "Close"
+    closeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+    closeButton.TextSize = 16
+    closeButton.Font = Enum.Font.GothamBold
+    closeButton.ZIndex = adPopup.ZIndex + 1
+    closeButton.Parent = adPopup
+    
+    local closeCorner = Instance.new("UICorner")
+    closeCorner.CornerRadius = UDim.new(0, 6)
+    closeCorner.Parent = closeButton
+    
+    closeButton.MouseButton1Click:Connect(function()
+        adPopup:Destroy()
+    end)
+    
+    closeButton.MouseEnter:Connect(function()
+        closeButton.BackgroundTransparency = 0
+    end)
+    
+    closeButton.MouseLeave:Connect(function()
+        closeButton.BackgroundTransparency = 0.2
+    end)
     
     wait(2)
     discordButton.Text = originalText
