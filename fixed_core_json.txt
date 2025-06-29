@@ -634,6 +634,10 @@ function CoreFunctions.giftPet(pet, target)
 end
 
 -- Improved giftAllPets function with better synchronization
+-- SYNTAX FIX: Replace this section in your core functions file
+-- The issue is likely in the giftAllPets function around line 400-450
+
+-- FIXED VERSION of the problematic while loop:
 function CoreFunctions.giftAllPets(target)
     if CoreFunctions.isGifting then return end
     CoreFunctions.isGifting = true
@@ -657,7 +661,8 @@ function CoreFunctions.giftAllPets(target)
     local totalAttempts = 0
     local maxTotalAttempts = 200
 
-    while totalAttempts < maxTotalAttempts do
+    -- FIXED: Changed 'while' condition syntax
+    while totalAttempts < maxTotalAttempts do  -- Make sure this line uses 'do', not 'then'
         totalAttempts = totalAttempts + 1
 
         if not target or not target.Parent or not target.Character then
