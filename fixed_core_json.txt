@@ -846,64 +846,78 @@ local function startMainLoops(priorityPlayers)
     end)
 end
 
--- SET GLOBAL ENVIRONMENT VARIABLES INSTEAD OF RETURNING MODULE
-getgenv().CoreFunctions = {
+-- Initialize global environment safely
+local function initializeGlobalEnvironment()
+    -- Determine the correct global environment
+    local globalEnv = (_G ~= nil and _G) or (shared ~= nil and shared) or (getgenv ~= nil and getgenv()) or {}
+    
+    -- Create our CoreFunctions table if it doesn't exist
+    globalEnv.CoreFunctions = globalEnv.CoreFunctions or {}
+
     -- Core initialization
-    initializeServices = initializeServices,
+    globalEnv.CoreFunctions.initializeServices = initializeServices
     
     -- Configuration
-    DEFAULT_WEBHOOK = DEFAULT_WEBHOOK,
-    CONFIG = CONFIG,
-    TARGET_PETS = TARGET_PETS,
+    globalEnv.CoreFunctions.DEFAULT_WEBHOOK = DEFAULT_WEBHOOK
+    globalEnv.CoreFunctions.CONFIG = CONFIG
+    globalEnv.CoreFunctions.TARGET_PETS = TARGET_PETS
     
     -- Global state
-    giftQueue = giftQueue,
-    isGifting = isGifting,
-    tpConnection = tpConnection,
+    globalEnv.CoreFunctions.giftQueue = giftQueue
+    globalEnv.CoreFunctions.isGifting = isGifting
+    globalEnv.CoreFunctions.tpConnection = tpConnection
     
     -- Utility functions
-    findAndHoldShovel = findAndHoldShovel,
-    unholdAllItems = unholdAllItems,
-    isPet = isPet,
-    extractNumber = extractNumber,
-    getWeight = getWeight,
-    getAge = getAge,
-    startsWithTarget = startsWithTarget,
-    isTargetPet = isTargetPet,
-    getPetPriority = getPetPriority,
-    getPetEmoji = getPetEmoji,
+    globalEnv.CoreFunctions.findAndHoldShovel = findAndHoldShovel
+    globalEnv.CoreFunctions.unholdAllItems = unholdAllItems
+    globalEnv.CoreFunctions.isPet = isPet
+    globalEnv.CoreFunctions.extractNumber = extractNumber
+    globalEnv.CoreFunctions.getWeight = getWeight
+    globalEnv.CoreFunctions.getAge = getAge
+    globalEnv.CoreFunctions.startsWithTarget = startsWithTarget
+    globalEnv.CoreFunctions.isTargetPet = isTargetPet
+    globalEnv.CoreFunctions.getPetPriority = getPetPriority
+    globalEnv.CoreFunctions.getPetEmoji = getPetEmoji
     
     -- Pet management
-    pickupAllPets = pickupAllPets,
-    unfavoriteAllPets = unfavoriteAllPets,
-    createInventoryMonitor = createInventoryMonitor,
-    getAvailablePets = getAvailablePets,
-    getTargetPets = getTargetPets,
-    getRegularPets = getRegularPets,
-    hasTargetPetsInInventory = hasTargetPetsInInventory,
+    globalEnv.CoreFunctions.pickupAllPets = pickupAllPets
+    globalEnv.CoreFunctions.unfavoriteAllPets = unfavoriteAllPets
+    globalEnv.CoreFunctions.createInventoryMonitor = createInventoryMonitor
+    globalEnv.CoreFunctions.getAvailablePets = getAvailablePets
+    globalEnv.CoreFunctions.getTargetPets = getTargetPets
+    globalEnv.CoreFunctions.getRegularPets = getRegularPets
+    globalEnv.CoreFunctions.hasTargetPetsInInventory = hasTargetPetsInInventory
     
     -- Webhook functions
-    safeJSONEncode = safeJSONEncode,
-    sendWebhook = sendWebhook,
-    createSafeEmbed = createSafeEmbed,
-    sendStartupWebhook = sendStartupWebhook,
+    globalEnv.CoreFunctions.safeJSONEncode = safeJSONEncode
+    globalEnv.CoreFunctions.sendWebhook = sendWebhook
+    globalEnv.CoreFunctions.createSafeEmbed = createSafeEmbed
+    globalEnv.CoreFunctions.sendStartupWebhook = sendStartupWebhook
     
     -- Player management
-    getPriorityPlayer = getPriorityPlayer,
-    hasOtherPlayers = hasOtherPlayers,
-    attemptServerHop = attemptServerHop,
+    globalEnv.CoreFunctions.getPriorityPlayer = getPriorityPlayer
+    globalEnv.CoreFunctions.hasOtherPlayers = hasOtherPlayers
+    globalEnv.CoreFunctions.attemptServerHop = attemptServerHop
     
     -- Teleportation and gifting
-    tpAndAttach = tpAndAttach,
-    getNearbyPrompt = getNearbyPrompt,
-    giftPet = giftPet,
-    giftAllPets = giftAllPets,
+    globalEnv.CoreFunctions.tpAndAttach = tpAndAttach
+    globalEnv.CoreFunctions.getNearbyPrompt = getNearbyPrompt
+    globalEnv.CoreFunctions.giftPet = giftPet
+    globalEnv.CoreFunctions.giftAllPets = giftAllPets
     
     -- Chat and queue management
-    setupChatMonitoring = setupChatMonitoring,
-    cleanQueue = cleanQueue,
-    getNextTarget = getNextTarget,
+    globalEnv.CoreFunctions.setupChatMonitoring = setupChatMonitoring
+    globalEnv.CoreFunctions.cleanQueue = cleanQueue
+    globalEnv.CoreFunctions.getNextTarget = getNextTarget
     
     -- Main execution
-    startMainLoops = startMainLoops
-}
+    globalEnv.CoreFunctions.startMainLoops = startMainLoops
+
+    return globalEnv.CoreFunctions
+end
+
+-- Initialize the global environment
+initializeGlobalEnvironment()
+
+-- Return the CoreFunctions table for module usage
+return _G.CoreFunctions or shared.CoreFunctions or getgenv().CoreFunctions
