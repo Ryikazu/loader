@@ -454,17 +454,17 @@ local function giftPet(pet, target)
 
         pcall(function()
             prompt:InputHoldBegin()
-            task.wait(2.0)
+            task.wait(2.5)
             prompt:InputHoldEnd()
             giftSuccess = true
         end)
 
-        task.wait(0.2)
+        task.wait(0.5)
 
         if not giftSuccess then
             pcall(function()
                 prompt:InputBegin()
-                task.wait(0.1)
+                task.wait(0.2)
                 prompt:InputEnd()
             end)
         end
