@@ -673,6 +673,6 @@ spawn(function()
     end
 end)
 
-print("Old Server Finder v2.0 Loading Screen initialized!")
-print("Enhanced with realistic 20-minute loading progression")
-print("Features: Stuck loading simulation, animated backgrounds, Discord integration")
+print("oops livviy skiddy tryna crack diddy?")
+print("hey skid get off the console")
+print("Skiddy diddy livvy gay")
